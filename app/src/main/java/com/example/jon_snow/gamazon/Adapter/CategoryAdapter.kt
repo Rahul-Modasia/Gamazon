@@ -13,15 +13,28 @@ import com.example.jon_snow.gamazon.R
 class CategoryAdapter(val context:Context,val categories:List<Categories>):BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val categoryView:View
-        categoryView = LayoutInflater.from(context).inflate(R.layout.category_list_item,null)
-        val categoryName:TextView=categoryView.findViewById(R.id.categoryName)
-        val category = categories[position]
-        categoryName.text=category.title
+        val viewHolder:ViewHolder
+        if(convertView==null) {
+            categoryView = LayoutInflater.from(context).inflate(R.layout.category_list_item, null)
+            viewHolder= ViewHolder()
+            viewHolder.categoryName = categoryView.findViewById(R.id.categoryName)
+            viewHolder.categoryImage = categoryView.findViewById(R.id.categoryImage)
+            categoryView.tag=viewHolder
+        }
+        else
+        {
+            viewHolder = convertView.tag as ViewHolder
+            categoryView = convertView
 
-        val categoryImage:ImageView=categoryView.findViewById(R.id.categoryImage)
-        val resourceId = context.resources.getIdentifier(category.image,"drawable",context.packageName)
-        categoryImage.setImageResource(resourceId)
-        return categoryView
+        }
+
+            val category = categories[position]
+            viewHolder.categoryName?.text = category.title
+            val resourceId = context.resources.getIdentifier(category.image, "drawable", context.packageName)
+            viewHolder.categoryImage?.setImageResource(resourceId)
+
+            return categoryView
+
 
     }
 
@@ -35,5 +48,10 @@ class CategoryAdapter(val context:Context,val categories:List<Categories>):BaseA
 
     override fun getCount(): Int {
         return categories.count()
+    }
+    private class ViewHolder
+    {
+        var categoryName:TextView?=null
+        var categoryImage:ImageView?=null
     }
 }
